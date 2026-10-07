@@ -1,0 +1,4 @@
+{
+  "title": "Token Slimmer",
+  "description": "Bounds tool results to cut the input tokens a session re-sends on every later step"
+}
