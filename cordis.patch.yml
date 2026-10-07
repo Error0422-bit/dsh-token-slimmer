@@ -1,0 +1,63 @@
+# Installs the slimmer into the profile that selects this bundle.
+#
+# ===========================================================================
+# ACTIVE CONFIG — this is the recommended setting
+# ===========================================================================
+# dsh links this checkout into the profile
+# (node_modules/@local/dsh-token-slimmer -> this directory), so these values are
+# the ones the running host reads.
+#
+# IMPORTANT: node caches an ES module by URL and dsh-hmr does not watch this
+# checkout. If the host is still running the module generation from before the
+# scoring / policy / reasoning / recovery code existed, a config key it does not
+# know (`reasoning`) fails activation — and a failed activation takes the whole
+# plugin down, including the tool-result bounding that works today.
+#
+# This block therefore takes effect on the next dsh RESTART. Until that restart
+# the host keeps running whatever it already loaded. Do not activate it through
+# the plugin manager against a stale host.
+# ===========================================================================
+- insert:
+    - id: token-slimmer
+      name: '@local/dsh-token-slimmer'
+      config:
+        maxResultTokens: 2000
+        readMaxResultTokens: 5000
+        reasoning:
+          strategy: auto
+          budgetTokens: 500
+          coldAfterMs: 300000
+          dryRun: true
+
+# ===========================================================================
+# Why these values
+# ===========================================================================
+#
+# fullTextOnRepeat is omitted on purpose: the default is false. A repeated call
+# re-executes the tool, so what comes back is fresh output, not the original
+# text — restoration is `slim --save-original` / `--restore` (recovery-store.js).
+#
+# dryRun stays true. Provider compatibility for reasoning rewrites is no longer
+# the open question -- an experiment on 2026-10-06 confirmed the route accepts a
+# rewritten body (`mode: "applied"`, no request failure), and REASONING_WRITES_VERIFIED
+# still gates every write regardless. What remains open is whether the rewrite
+# pays for itself: reason is billed as context, and rewriting history a request
+# already carried re-bills the suffix from the change point. That wants a
+# controlled comparison before the gate opens.
+#
+# Budgets: numbers copied into comments rot — the old 21.7%/35.5% figures here
+# described the pre-fidelity pipeline and an unverified billing model. The
+# portable baseline lives in README.md ("预算怎么选") and is regenerated with:
+#
+#   node scripts/readme-baseline.mjs
+#
+# What the plugin actually saves on real sessions, charged by re-send rather
+# than by first sight (the latter overstates it by roughly an order of
+# magnitude, because most results never get re-sent many times):
+#
+#   node test/cost-replay.mjs     # reads private transcripts; explicit entry
+#   node test/budget-swap.mjs     # per-budget first-sight comparison
+#
+# Verify after switching:
+#   npm test            # kernel suite + every *.test.mjs
+#   node test/perf.mjs  # bounded path cost, typical sizes are <1ms

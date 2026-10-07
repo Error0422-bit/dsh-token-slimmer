@@ -1,0 +1,45 @@
+{
+  "name": "@local/dsh-token-slimmer",
+  "version": "1.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Bounds tool results and assistant reasoning before they enter the request, cutting the input tokens a session re-sends on every later step.",
+  "icon": "./icon.svg",
+  "meta": {
+    "title": "Token Slimmer",
+    "description": "压缩工具结果，削减每轮重发的输入 token"
+  },
+  "exports": {
+    ".": "./index.js",
+    "./slim": "./slim.js",
+    "./policy": "./policy.js",
+    "./importance": "./importance.js",
+    "./reasoning": "./reasoning.js",
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json"
+  },
+  "bin": {
+    "slim": "./bin/slim.mjs"
+  },
+  "scripts": {
+    "test": "node test/all.mjs"
+  },
+  "files": [
+    "index.js",
+    "slim.js",
+    "policy.js",
+    "importance.js",
+    "reasoning.js",
+    "metrics.js",
+    "recovery-store.js",
+    "bin/slim.mjs",
+    "cordis.patch.yml",
+    "icon.svg",
+    "locale/*.json"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
