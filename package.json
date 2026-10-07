@@ -1,5 +1,5 @@
 {
-  "name": "@local/dsh-token-slimmer",
+  "name": "dsh-token-slimmer",
   "version": "1.1.0",
   "private": true,
   "type": "module",
@@ -41,5 +41,19 @@
     "bundle": {
       "patch": "./cordis.patch.yml"
     }
-  }
+  },
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Error0422-bit/dsh-token-slimmer.git"
+  },
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "plugin",
+    "tokens",
+    "context",
+    "compression",
+    "llm"
+  ]
 }
